@@ -29,11 +29,11 @@ def convert_txt_json(txt_path, json_path, pid, tid):
         file1.write(jas)
 
 
-for txt_file in os.listdir("data_txt"):
-    # print(file)
+for txt_file in os.listdir("../data_txt"):
+    # print(txt_file)
     json_file = txt_file.split(".")[0] + ".json"
     info = txt_file.split(".")[0].split("-")
-    convert_txt_json("data_txt/" + txt_file, "data_json/" + json_file, info[0], info[1])
+    convert_txt_json("../data_txt/" + txt_file, "../data_json/" + json_file, info[0], info[1])
 
 # json file looks like this:
 # {
