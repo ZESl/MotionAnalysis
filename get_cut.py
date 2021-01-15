@@ -1,18 +1,13 @@
 import xlrd
 import numpy as np
+import csv
+import os
 from util.time_subtraction import time_sub
-
-# 读取文件
-data = xlrd.open_workbook("data_xls/2-1.xls")
-table = data.sheets()[0]
-
-# 初始左右手动作幅度集合
-right = []
-left = []
+from get_VR_event import get_all_event, get_event_by_time
 
 
 # 三维空间曲线，采用参数形式
-def curve_3d(x, y, z, k):
+def curve_3d(x, y, z):
     area_list = []  # 存储每一微小步长的曲线长度
 
     for i in range(1, len(x)):
@@ -24,17 +19,30 @@ def curve_3d(x, y, z, k):
     area = sum(area_list)  # 求和计算曲线在t:[0,2*pi]的长度
 
     if area > 0.1:
-        if k == 1:
-            left.append(area)
-            print("左手三维空间曲线长度：{:.4f}".format(area))
-        elif k == 2:
-            right.append(area)
-            print("右手三维空间曲线长度：{:.4f}".format(area))
+        return area
+    else:
+        return 0
 
 
-def cut():
+def cut(filename):
+    # 读取文件
+    data = xlrd.open_workbook("data_xls/" + filename + ".xls")
+    table = data.sheets()[0]
+
     # start time
     start_time = table.cell(1, 0).value
+
+    # write to data_event&cut
+    f = open('data_event&cut/' + filename + ".csv", 'w', encoding='utf-8', newline='')
+    csv_writer = csv.writer(f)
+    csv_writer.writerow(['time stamp', 'passed time(seconds)', 'side', 'cut length', 'event type'])
+
+    # event
+    all_event = get_all_event()
+
+    # 初始左右手动作幅度集合
+    right = []
+    left = []
 
     # 存放长动作
     r_x = []
@@ -61,6 +69,8 @@ def cut():
         rc_temp_y = float(table.cell(row, 5).value) - float(table.cell(row - 1, 5).value)
         rc_temp_z = float(table.cell(row, 6).value) - float(table.cell(row - 1, 6).value)
 
+        passed_time = time_sub(start_time, cur_time)
+
         # 左手
         if abs(lc_temp_x) >= threshold or abs(lc_temp_y) >= threshold or abs(lc_temp_z) >= threshold:
             l_x.append(float(table.cell(row, 1).value))
@@ -68,8 +78,14 @@ def cut():
             l_z.append(float(table.cell(row, 3).value))
         else:
             if len(l_x) > 2:
-                print("pass time:" + str(time_sub(start_time, cur_time)))
-                curve_3d(l_x, l_y, l_z, 1)
+                curve = curve_3d(l_x, l_y, l_z)
+                if curve > 0.1:
+                    left.append(curve)
+                    event = get_event_by_time(all_event, passed_time)
+                    print("----pass time:" + str(passed_time) + "----")
+                    print("event type:" + str(event))
+                    print("左手三维空间曲线长度：{:.4f}".format(curve))
+                    csv_writer.writerow([cur_time, passed_time, 'left', curve, event])
             l_x = []
             l_y = []
             l_z = []
@@ -81,22 +97,29 @@ def cut():
             r_z.append(float(table.cell(row, 6).value))
         else:
             if len(r_x) > 2:
-                print("seconds passed:" + str(time_sub(start_time, cur_time)))
-                curve_3d(r_x, r_y, r_z, 2)
+                curve = curve_3d(r_x, r_y, r_z)
+                if curve > 0.1:
+                    right.append(curve)
+                    event = get_event_by_time(all_event, passed_time)
+                    print("----pass time:" + str(passed_time) + "----")
+                    print("event type:" + str(event))
+                    print("右手三维空间曲线长度：{:.4f}".format(curve))
+                    csv_writer.writerow([cur_time, passed_time, 'right', curve, event])
             r_x = []
             r_y = []
             r_z = []
 
+    f.close()
+
+    # get average cut length
     sum_right = 0
     sum_left = 0
     for i in range(0, len(right)):
         sum_right += right[i]
-
     average_right = sum_right / len(right)
 
     for i in range(0, len(left)):
         sum_left += left[i]
-
     average_left = sum_left / len(left)
 
     print('右手平均：', average_right)
@@ -104,4 +127,7 @@ def cut():
 
 
 if __name__ == '__main__':
-    cut()
+    for txt_file in os.listdir("data_xls"):
+        # print(txt_file)
+        file_name = txt_file.split(".")[0]
+        cut(file_name)
