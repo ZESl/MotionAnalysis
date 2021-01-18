@@ -4,10 +4,11 @@ FUNCTION
 ---
 已完成：基于Unity开发VR游戏，逐帧获取Controller和Tracker的位置数据。
 该仓库完成以下几个功能：
-1. get_cut.py 通过对位置数据进行动作分割、特征提取。
-2. get_VR_event.py 获取VR事件数据
-3. get_user_feature.py 获取用户数据（待写）
-4. apriori.py 数据关联规则学习（待写）
+1. get_cut.py 通过对位置数据进行动作分割、并找出相对应的VR事件，写入data_event&cut文件中。
+2. get_VR_event.py 从data_event获取VR事件数据
+3. get_user_feature.py 从data_user获取用户数据
+4. motion_analysis.py 对data_event&cut中的动作数据进行分析，并集成相对应的用户数据（待写）
+5. apriori.py 数据关联规则学习（待写）
 
 
 FILE FOLDER

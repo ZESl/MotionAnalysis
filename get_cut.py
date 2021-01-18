@@ -24,6 +24,8 @@ def curve_3d(x, y, z):
         return 0
 
 
+# 动作分割，并找出相对应的VR事件，写入文件 data_event&cut/xxx.csv
+# 包括：time stamp,passed time(seconds),side,cut length,event type
 def cut(filename):
     # 读取文件
     data = xlrd.open_workbook("data_xls/" + filename + ".xls")
