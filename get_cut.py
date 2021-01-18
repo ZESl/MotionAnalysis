@@ -2,7 +2,7 @@ import xlrd
 import numpy as np
 import csv
 import os
-from util.time_subtraction import time_sub
+from util.time_subtraction import time_sub_ms
 from get_VR_event import get_all_event, get_event_by_time
 
 
@@ -69,7 +69,7 @@ def cut(filename):
         rc_temp_y = float(table.cell(row, 5).value) - float(table.cell(row - 1, 5).value)
         rc_temp_z = float(table.cell(row, 6).value) - float(table.cell(row - 1, 6).value)
 
-        passed_time = time_sub(start_time, cur_time)
+        passed_time = time_sub_ms(start_time, cur_time)
 
         # 左手
         if abs(lc_temp_x) >= threshold or abs(lc_temp_y) >= threshold or abs(lc_temp_z) >= threshold:

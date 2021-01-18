@@ -9,6 +9,7 @@ def get_all_event():
     return content
 
 
+# time unit: second (float)
 def get_event_by_time(all_events, time):
     # an event would be like [time, event]
     last_event = [0, 0]
