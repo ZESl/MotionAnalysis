@@ -25,10 +25,9 @@ def get_all_users():
     return all_user_data
 
 
-def get_user_by_id(uid):
-    all_user_data = get_all_users()
+def get_user_by_id(all_user_data, uid):
     return all_user_data[uid - 1]
 
+
 # if __name__ == '__main__':
-#     print(get_all_users())
-#     print(get_user_by_id(1))
+#     print(get_user_by_id(get_all_users(), 1))
