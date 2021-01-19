@@ -37,7 +37,7 @@ def cut(filename):
     # write to data_event&cut
     f = open('data_event&cut/' + filename + ".csv", 'w', encoding='utf-8', newline='')
     csv_writer = csv.writer(f)
-    csv_writer.writerow(['time stamp', 'passed time(seconds)', 'side', 'cut length', 'event type'])
+    csv_writer.writerow(['timestamp', 'passed_time', 'side', 'cut_length', 'time', 'speed', 'event_type'])
 
     # event
     all_event = get_all_event()
@@ -53,6 +53,10 @@ def cut(filename):
     l_x = []
     l_y = []
     l_z = []
+
+    # 存放时间
+    l_t = []
+    r_t = []
 
     # 判断静止状态的阈值
     threshold = 0.02
@@ -75,6 +79,7 @@ def cut(filename):
 
         # 左手
         if abs(lc_temp_x) >= threshold or abs(lc_temp_y) >= threshold or abs(lc_temp_z) >= threshold:
+            l_t.append(cur_time)
             l_x.append(float(table.cell(row, 1).value))
             l_y.append(float(table.cell(row, 2).value))
             l_z.append(float(table.cell(row, 3).value))
@@ -84,16 +89,20 @@ def cut(filename):
                 if curve > 0.1:
                     left.append(curve)
                     event = get_event_by_time(all_event, passed_time)
-                    print("----pass time:" + str(passed_time) + "----")
-                    print("event type:" + str(event))
-                    print("左手三维空间曲线长度：{:.4f}".format(curve))
-                    csv_writer.writerow([cur_time, passed_time, 'left', curve, event])
+                    time = time_sub_ms(l_t[0], cur_time)
+                    speed = float(curve / time) if time > 0 else -1  # unit: m/s
+                    # print("----pass time:" + str(passed_time) + "----")
+                    # print("event type:" + str(event))
+                    # print("左手三维空间曲线长度：{:.4f}".format(curve))
+                    csv_writer.writerow([cur_time, passed_time, 'left', curve, time, speed, event])
             l_x = []
             l_y = []
             l_z = []
+            l_t = []
 
         # 右手
         if abs(rc_temp_x) >= threshold or abs(rc_temp_y) >= threshold or abs(rc_temp_z) >= threshold:
+            r_t.append(cur_time)
             r_x.append(float(table.cell(row, 4).value))
             r_y.append(float(table.cell(row, 5).value))
             r_z.append(float(table.cell(row, 6).value))
@@ -103,13 +112,16 @@ def cut(filename):
                 if curve > 0.1:
                     right.append(curve)
                     event = get_event_by_time(all_event, passed_time)
-                    print("----pass time:" + str(passed_time) + "----")
-                    print("event type:" + str(event))
-                    print("右手三维空间曲线长度：{:.4f}".format(curve))
-                    csv_writer.writerow([cur_time, passed_time, 'right', curve, event])
+                    time = time_sub_ms(r_t[0], cur_time)
+                    speed = float(curve / time) if time > 0 else -1  # unit: m/s
+                    # print("----pass time:" + str(passed_time) + "----")
+                    # print("event type:" + str(event))
+                    # print("右手三维空间曲线长度：{:.4f}".format(curve))
+                    csv_writer.writerow([cur_time, passed_time, 'right', curve, time, speed, event])
             r_x = []
             r_y = []
             r_z = []
+            r_t = []
 
     f.close()
 
@@ -130,6 +142,6 @@ def cut(filename):
 
 if __name__ == '__main__':
     for txt_file in os.listdir("data_xls"):
-        # print(txt_file)
+        print('--- ' + txt_file + ' ---')
         file_name = txt_file.split(".")[0]
         cut(file_name)
