@@ -27,18 +27,28 @@ def concat_all(file_name):
         # add to df_list
         df_list.append(df)
 
-    df_result = pd.concat(df_list, axis=0, join='outer')
-    df_result.to_csv(file_name)
+    df_motion = pd.concat(df_list, axis=0, join='outer')
+    df_motion.to_csv(file_name)
     print('Concat all file done.')
+
+    return df_motion
 
 
 # save all data (add user features)
-def add_user(file_name):
-    df_motion = pd.read_csv(file_name, encoding='gbk')
+def add_user(df_motion, file_name):
     df_motion["uid"] = df_motion["uid"].astype(str)
     df_user = pd.DataFrame(get_all_users(), columns=['uid', 'name', 'gender', 'age', 'height(cm)', 'weight(kg)'])
     df_result = pd.merge(df_motion, df_user, on='uid')
-    df_result.to_csv('user_' + file_name)
+    df_result.to_csv(file_name)
+    return df_result
+
+
+def strip_dataset(df_result, file_name):
+    drop_list = ['passed_time', 'name']
+    df_stripped = df_result
+    df_stripped = df_stripped.drop(drop_list, axis=1)
+    df_stripped.to_csv(file_name)
+    return df_stripped
 
 
 def analyze_event(df, event_type):
@@ -48,13 +58,15 @@ def analyze_event(df, event_type):
 
 if __name__ == '__main__':
 
-    filename = 'Result.csv'
+    # write to file
+    filename = 'Data_motion.csv'
     if not os.path.exists(filename):
-        concat_all(filename)
-        add_user(filename)
-        
+        df_m = concat_all(filename)
+        df_r = add_user(df_m, 'Data_result.csv')
+        df_s = strip_dataset(df_r, 'Data_stripped.csv')
+
     # Analyze Event
     # i: event type (include 1,2,3)
-    df_all = pd.read_csv(filename, encoding='gbk', index_col=0)
-    for i in range(1, 4):
-        analyze_event(df_all, i)
+    # df_all = pd.read_csv(filename, encoding='gbk')
+    # for i in range(1, 4):
+    #     analyze_event(df_all, i)
