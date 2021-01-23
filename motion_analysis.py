@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 from get_user_feature import get_all_users
+from util.draw import draw_scatter, draw_scatter_multi
 
 
 # save all motion data from folder:data_event
@@ -51,9 +52,17 @@ def strip_dataset(df_result, file_name):
     return df_stripped
 
 
-def analyze_event(df, event_type):
-    df_t = df[df.event_type == event_type]
-    # print(df_t.describe())
+def analyze_event(df, uid, event_type):
+    df_t = df[(df.event_type == event_type) & (df.uid == uid)]
+    cut_list.append(df_t['cut_length'].mean())
+    x_cut.append(str(uid) + '-' + str(event_type))
+
+
+def analyze_trial(df, uid, event_type, trial):
+    df_t = df[(df.event_type == event_type) & (df.uid == uid) & (df.trial == trial)]
+    trial_list.append(df_t['cut_length'].mean())
+    x_trial.append(str(event_type) + '-' + str(trial))
+    print('uid:', uid, ' event_type:', event_type, ' trial:', trial, ' cut_length:', df_t['cut_length'].mean())
 
 
 if __name__ == '__main__':
@@ -66,7 +75,21 @@ if __name__ == '__main__':
         df_s = strip_dataset(df_r, 'Data_stripped.csv')
 
     # Analyze Event
-    # i: event type (include 1,2,3)
-    # df_all = pd.read_csv(filename, encoding='gbk')
-    # for i in range(1, 4):
-    #     analyze_event(df_all, i)
+    df_all = pd.read_csv(filename, encoding='gbk')
+    x_cut = []
+    cut_list = []
+    x_trial = []
+    trial_list_all = []
+    for i in range(1, 4):  # uid
+        x_trial = []
+        trial_list = []
+        for j in range(1, 4):  # event_type
+            analyze_event(df_all, i, j)
+
+            # Analyze Trial
+            for k in range(1, 3):  # trial
+                analyze_trial(df_all, i, j, k)
+        trial_list_all.append(trial_list)
+        # draw_scatter(x_trial, trial_list, 'event-trial', 'cut-length')
+    draw_scatter_multi(x_trial, trial_list_all, 'event-trial', 'cut-length')
+    draw_scatter(x_cut, cut_list, 'uid-event', 'cut-length')

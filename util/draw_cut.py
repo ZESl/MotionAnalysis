@@ -11,7 +11,7 @@ ax = fig.gca(projection='3d')
 ax.set_xlabel('x')
 ax.set_ylabel("z")
 ax.set_zlabel("y")
-plt.title('Motion Track of Controllers and Trackers', fontsize=12)
+# plt.title('Motion Track of Controllers and Trackers', fontsize=12)
 
 # left controller
 lc_x = list()
