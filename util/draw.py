@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 
 
 # x_axis: str list for x axis
-def draw_scatter(x_axis, y, x_label, y_label):
+def draw_scatter(x_axis, y, x_label, y_label, title):
     font2 = {'family': 'Times New Roman',
              'weight': 'normal',
              'size': 20,
@@ -13,11 +13,13 @@ def draw_scatter(x_axis, y, x_label, y_label):
     plt.ylabel(y_label, font2)
     plt.xticks(x, x_axis)
     plt.tick_params(labelsize=14)  # 刻度字体大小14
+    plt.title(title, fontsize=14)
+    plt.savefig("images/" + title + ".png")
     plt.show()
 
 
 # x_axis: str list for x axis
-def draw_scatter_multi(x_axis, y_list, x_label, y_label):
+def draw_scatter_multi(x_axis, y_list, x_label, y_label, title):
     font2 = {'family': 'Times New Roman',
              'weight': 'normal',
              'size': 20,
@@ -29,4 +31,6 @@ def draw_scatter_multi(x_axis, y_list, x_label, y_label):
     plt.ylabel(y_label, font2)
     plt.xticks(x, x_axis)
     plt.tick_params(labelsize=14)  # 刻度字体大小14
+    plt.title(title, fontsize=14)
+    plt.savefig("images/" + title + ".png")
     plt.show()
