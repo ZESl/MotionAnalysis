@@ -1,9 +1,9 @@
 import csv
+import pandas as pd
 
 
-# unfinished
-# feature = ['id', 'name', 'gender', 'age', 'height(cm)', 'weight(kg)']
-def get_all_users():
+# return a dataframe given all features of all users
+def get_all_users_all_features():
     with open('data_user/user.csv', 'r', encoding='utf-8') as csv_file:
         csv_file = csv.reader(csv_file)
         all_user_data = []
@@ -22,7 +22,15 @@ def get_all_users():
 
             # add the user data to all-list
             all_user_data.append(user_data)
-    return all_user_data
+    # todo modify the columns
+    all_user_data_df = pd.DataFrame(all_user_data, columns=['uid', 'name', 'gender', 'age', 'height(cm)', 'weight(kg)'])
+    return all_user_data_df
+
+
+# example featureList = ['uid', 'name', 'gender', 'age', 'height(cm)', 'weight(kg)']
+def get_all_user_feature_filtered(feature_list):
+    df = get_all_users_all_features()
+    return df[feature_list]
 
 
 def get_user_by_id(all_user_data, uid):

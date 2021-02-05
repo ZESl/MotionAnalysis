@@ -1,12 +1,12 @@
 import os
 import pandas as pd
-from get_user_feature import get_all_users
+from get_user_feature import get_all_user_feature_filtered
 
 
 # save all motion data from folder:data_event
 # + add uid trial
 # - filter data from small cut lengths
-def concat_all(file_name):
+def concat_all():
     df_list = []
     for file in os.listdir("data_event&cut"):
         df = pd.read_csv('data_event&cut/' + file, encoding='gbk', index_col=0)
@@ -28,7 +28,6 @@ def concat_all(file_name):
         df_list.append(df)
 
     df_motion = pd.concat(df_list, axis=0, join='outer')
-    df_motion.to_csv(file_name)
     print('Concat all file done.')
 
     return df_motion
@@ -36,21 +35,16 @@ def concat_all(file_name):
 
 # save all data (add user features)
 # filter some irrelevant features: eg. ['passed_time', 'name']
-def add_user(df_motion, file_name):
+def add_user(df_motion, feature_list):
     df_motion["uid"] = df_motion["uid"].astype(str)
-    df_user = pd.DataFrame(get_all_users(), columns=['uid', 'name', 'gender', 'age', 'height(cm)', 'weight(kg)'])
+    df_user = get_all_user_feature_filtered(feature_list)
     df_result = pd.merge(df_motion, df_user, on='uid')
     print('add_user: Add user done.')
-
-    drop_list = ['passed_time', 'name']
-    df_result = df_result.drop(drop_list, axis=1)
-    df_result.to_csv(file_name)
-    print('add_user: Strip done.')
     return df_result
 
 
 # get mean, min, max, ... data to form a dataset
-def get_dataset(df, file_name):
+def get_dataset(df):
     df_dataset = {
         "uid": [],
         "side": [],
@@ -90,31 +84,22 @@ def get_dataset(df, file_name):
                     df_dataset["speed_std"].append(df_t["speed"].std())
                     df_dataset["speed_var"].append(df_t["speed"].var())
     df_dataset = pd.DataFrame(df_dataset)
-    df_dataset.to_csv(file_name)
     print('get_dataset: Get dataset done.')
-    df_dataset["uid"] = df_dataset["uid"].astype(str)
-    df_user = pd.DataFrame(get_all_users(), columns=['uid', 'name', 'gender', 'age', 'height(cm)', 'weight(kg)'])
-    df_dataset = pd.merge(df_dataset, df_user, on='uid')
+
+    df_dataset = add_user(df_dataset, feature_list)
     print('get_dataset: Add user done.')
+
     return df_dataset
-
-
-def categorize_cut_speed(df, file_name):
-    # unfinished
-    df_result = df
-    df_result.to_csv(file_name)
-    print('categorize_cut_speed: Categorize done.')
-    return df_result
 
 
 if __name__ == '__main__':
     # include all motion data
-    filename = 'Dataset/Data_motion.csv'
-    df_m = concat_all(filename)
-    df_r = add_user(df_m, 'Dataset/Data_motion_user.csv')
+    df_m = concat_all()
+    feature_list = ['uid', 'gender', 'age', 'height(cm)', 'weight(kg)']  # todo modify the columns
+    df_r = add_user(df_m, feature_list)
+    df_r.to_csv('Dataset/Data_motion_user.csv', encoding='gbk')
 
     # only contains mean/min/max motion data
-    df_m = pd.read_csv(filename, encoding='gbk')
-    df_d = get_dataset(df_m, 'Dataset/Data_dataset_user.csv')
-
-    # categorize_cut_speed(df_d, 'Dataset/Data_dataset_user(categorized).csv')
+    df_m = pd.read_csv('Dataset/Data_motion_user.csv', encoding='gbk')
+    df_d = get_dataset(df_m)
+    df_d.to_csv('Dataset/Data_dataset_user.csv', encoding='gbk')
