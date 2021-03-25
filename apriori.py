@@ -179,9 +179,9 @@ if __name__ == "__main__":
     #
     # minSupport = options.minS
     # minConfidence = options.minC
-    inFile = dataFromFile("Data_stripped.csv")
-    minSupport = 0.5
-    minConfidence = 0.7
+    inFile = dataFromFile("Dataset/Data_apriori.csv")
+    minSupport = 0.4
+    minConfidence = 0.6
     items, rules = runApriori(inFile, minSupport, minConfidence)
 
     printResults(items, rules)

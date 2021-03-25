@@ -1,5 +1,6 @@
 import xlrd
 import numpy as np
+import pandas as pd
 import csv
 import os
 from util.time_subtraction import time_sub_ms
@@ -62,10 +63,7 @@ def cut(filename):
     threshold = 0.02
 
     # 迭代所有的行
-    row = 1
-    for i in range(2, table.nrows):
-        row += 1
-
+    for row in range(2, table.nrows):
         # 当前行与上一行的差
         cur_time = table.cell(row, 0).value
         lc_temp_x = float(table.cell(row, 1).value) - float(table.cell(row - 1, 1).value)
@@ -77,6 +75,7 @@ def cut(filename):
 
         passed_time = time_sub_ms(start_time, cur_time)
 
+        # 左右手分开计算
         # 左手
         if abs(lc_temp_x) >= threshold or abs(lc_temp_y) >= threshold or abs(lc_temp_z) >= threshold:
             l_t.append(cur_time)
@@ -140,8 +139,23 @@ def cut(filename):
     print('左手平均：', average_left)
 
 
+# Tracker位移
+# 按max-min来算矩形面积
+def move(filename):
+    # 读取文件
+    df = pd.read_excel("data_xls/" + filename + ".xls", 0)
+    df.head()
+    x_max = df["lt_x"].max() if df["lt_x"].max() > df["rt_x"].max() else df["rt_x"].max()
+    x_min = df["lt_x"].min() if df["lt_x"].min() < df["rt_x"].min() else df["rt_x"].min()
+    y_max = df["lt_y"].max() if df["lt_y"].max() > df["rt_y"].max() else df["rt_y"].max()
+    y_min = df["lt_y"].min() if df["lt_y"].min() < df["rt_y"].min() else df["rt_y"].min()
+    square = (x_max - x_min) * (y_max - y_min)
+    print(square)
+
+
 if __name__ == '__main__':
     for txt_file in os.listdir("data_xls"):
         print('--- ' + txt_file + ' ---')
         file_name = txt_file.split(".")[0]
         cut(file_name)
+        move(file_name)
