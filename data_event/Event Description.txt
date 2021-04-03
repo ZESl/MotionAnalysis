@@ -1,0 +1,15 @@
+FIRST COLUMN: TIME
+SECOND COLUMN: EVENT TYPE
+
+
+*Event 0: No event
+
+*Event 1: 单手在身前切割（近距离）
+
+*Event 2: 单手在身旁切割（远距离）
+
+*Event 3: 单手反手在身前切割
+
+*Event 4: 单手反手在身旁切割
+
+*Event 5: 双手切割动作
