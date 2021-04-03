@@ -1,4 +1,4 @@
-import xlrd
+# import xlrd
 import numpy as np
 import pandas as pd
 import csv
@@ -29,16 +29,19 @@ def curve_3d(x, y, z):
 # 包括：time stamp,passed time(seconds),side,cut length,event type
 def cut(filename):
     # 读取文件
-    data = xlrd.open_workbook("data_xls/" + filename + ".xls")
-    table = data.sheets()[0]
-
-    # start time
-    start_time = table.cell(1, 0).value
+    # with open("data_csv/" + filename + ".csv")as f_in:
 
     # write to data_event&cut
     f = open('data_event&cut/' + filename + ".csv", 'w', encoding='utf-8', newline='')
     csv_writer = csv.writer(f)
     csv_writer.writerow(['timestamp', 'passed_time', 'side', 'cut_length', 'time', 'speed', 'event_type'])
+
+    # read
+    df = pd.read_csv("data_csv/" + filename + ".csv")
+    # f_csv = csv.reader(f_in)
+
+    # start time
+    start_time = df.iloc[0, 0]
 
     # event
     all_event = get_all_event()
@@ -61,17 +64,17 @@ def cut(filename):
 
     # 判断静止状态的阈值
     threshold = 0.02
-
+    print(df.shape[0])
     # 迭代所有的行
-    for row in range(2, table.nrows):
+    for row in range(1, df.shape[0]):
         # 当前行与上一行的差
-        cur_time = table.cell(row, 0).value
-        lc_temp_x = float(table.cell(row, 1).value) - float(table.cell(row - 1, 1).value)
-        lc_temp_y = float(table.cell(row, 2).value) - float(table.cell(row - 1, 2).value)
-        lc_temp_z = float(table.cell(row, 3).value) - float(table.cell(row - 1, 3).value)
-        rc_temp_x = float(table.cell(row, 4).value) - float(table.cell(row - 1, 4).value)
-        rc_temp_y = float(table.cell(row, 5).value) - float(table.cell(row - 1, 5).value)
-        rc_temp_z = float(table.cell(row, 6).value) - float(table.cell(row - 1, 6).value)
+        cur_time = df.iloc[row, 0]
+        lc_temp_x = float(df.iloc[row, 1]) - float(df.iloc[row - 1, 1])
+        lc_temp_y = float(df.iloc[row, 2]) - float(df.iloc[row - 1, 2])
+        lc_temp_z = float(df.iloc[row, 3]) - float(df.iloc[row - 1, 3])
+        rc_temp_x = float(df.iloc[row, 4]) - float(df.iloc[row - 1, 4])
+        rc_temp_y = float(df.iloc[row, 5]) - float(df.iloc[row - 1, 5])
+        rc_temp_z = float(df.iloc[row, 6]) - float(df.iloc[row - 1, 6])
 
         passed_time = time_sub_ms(start_time, cur_time)
 
@@ -79,9 +82,9 @@ def cut(filename):
         # 左手
         if abs(lc_temp_x) >= threshold or abs(lc_temp_y) >= threshold or abs(lc_temp_z) >= threshold:
             l_t.append(cur_time)
-            l_x.append(float(table.cell(row, 1).value))
-            l_y.append(float(table.cell(row, 2).value))
-            l_z.append(float(table.cell(row, 3).value))
+            l_x.append(float(df.iloc[row, 1]))
+            l_y.append(float(df.iloc[row, 2]))
+            l_z.append(float(df.iloc[row, 3]))
         else:
             if len(l_x) > 2:
                 curve = curve_3d(l_x, l_y, l_z)
@@ -102,9 +105,9 @@ def cut(filename):
         # 右手
         if abs(rc_temp_x) >= threshold or abs(rc_temp_y) >= threshold or abs(rc_temp_z) >= threshold:
             r_t.append(cur_time)
-            r_x.append(float(table.cell(row, 4).value))
-            r_y.append(float(table.cell(row, 5).value))
-            r_z.append(float(table.cell(row, 6).value))
+            r_x.append(float(df.iloc[row, 4]))
+            r_y.append(float(df.iloc[row, 5]))
+            r_z.append(float(df.iloc[row, 6]))
         else:
             if len(r_x) > 2:
                 curve = curve_3d(r_x, r_y, r_z)
@@ -154,7 +157,7 @@ def move(filename):
 
 
 if __name__ == '__main__':
-    for txt_file in os.listdir("data_xls"):
+    for txt_file in os.listdir("data_csv"):
         print('--- ' + txt_file + ' ---')
         file_name = txt_file.split(".")[0]
         cut(file_name)

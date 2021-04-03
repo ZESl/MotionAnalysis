@@ -95,7 +95,9 @@ def get_dataset(df):
 if __name__ == '__main__':
     # include all motion data
     df_m = concat_all()
-    feature_list = ['uid', 'gender', 'age', 'height(cm)', 'weight(kg)']  # todo modify the columns
+    feature_list = ['uid', 'gender', 'age', 'height', 'weight',
+                    'side', 'VR_exp', 'game_fre', 'sport_fre',
+                    'difficulty', 'enjoyment', 'fatigue']  # todo modify the columns
     df_r = add_user(df_m, feature_list)
     df_r.to_csv('Dataset/Data_motion_user.csv', encoding='gbk')
 
