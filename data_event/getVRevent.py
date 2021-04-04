@@ -19,14 +19,12 @@ for note in notes:
     elif (note['_lineIndex'] == 3 and note['_type'] == 0) or (note['_lineIndex'] == 0 and note['_type'] == 1):
         event = 4
 
-    if t != pre:
-        tins.append([t * 60 / 108, event])
-        pre = t
-    else:
+    if t == pre:
         tins.pop()
         event = 5
-        tins.append([t * 60 / 108, event])
-        pre = t
+    time = (t * 60 / 108) + 1  # 加上方块过来的时间
+    tins.append([time, event])
+    pre = t
 
 print(tins)
 dataframe = pd.DataFrame(tins)
