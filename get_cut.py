@@ -32,7 +32,7 @@ def cut(filename):
     # with open("data_csv/" + filename + ".csv")as f_in:
 
     # write to data_event&cut
-    f = open('data_event&cut/' + filename + ".csv", 'w', encoding='utf-8', newline='')
+    f = open('data_event&cut/raw/' + filename + ".csv", 'w', encoding='utf-8', newline='')
     csv_writer = csv.writer(f)
     csv_writer.writerow(['timestamp', 'passed_time', 'side', 'cut_length', 'time', 'speed', 'event_type'])
 
@@ -64,7 +64,6 @@ def cut(filename):
 
     # 判断静止状态的阈值
     threshold = 0.02
-    print(df.shape[0])
     # 迭代所有的行
     for row in range(1, df.shape[0]):
         # 当前行与上一行的差
@@ -80,7 +79,8 @@ def cut(filename):
 
         # 左右手分开计算
         # 左手
-        if abs(lc_temp_x) >= threshold or abs(lc_temp_y) >= threshold or abs(lc_temp_z) >= threshold:
+        # if abs(lc_temp_x) >= threshold or abs(lc_temp_y) >= threshold or abs(lc_temp_z) >= threshold:
+        if abs(lc_temp_x) + abs(lc_temp_y) + abs(lc_temp_z) >= threshold:
             l_t.append(cur_time)
             l_x.append(float(df.iloc[row, 1]))
             l_y.append(float(df.iloc[row, 2]))
@@ -103,7 +103,8 @@ def cut(filename):
             l_t = []
 
         # 右手
-        if abs(rc_temp_x) >= threshold or abs(rc_temp_y) >= threshold or abs(rc_temp_z) >= threshold:
+        # if abs(rc_temp_x) >= threshold or abs(rc_temp_y) >= threshold or abs(rc_temp_z) >= threshold:
+        if abs(rc_temp_x) + abs(rc_temp_y) + abs(rc_temp_z) >= threshold:
             r_t.append(cur_time)
             r_x.append(float(df.iloc[row, 4]))
             r_y.append(float(df.iloc[row, 5]))
@@ -127,26 +128,29 @@ def cut(filename):
 
     f.close()
 
-    # get average cut length
-    sum_right = 0
-    sum_left = 0
-    for i in range(0, len(right)):
-        sum_right += right[i]
-    average_right = sum_right / len(right)
+    df = pd.read_csv('data_event&cut/raw/' + filename + ".csv", encoding='gbk', index_col=0)
+    print(df.describe())
 
-    for i in range(0, len(left)):
-        sum_left += left[i]
-    average_left = sum_left / len(left)
+    # define cut length filter condition
+    max_sift = np.percentile(df["cut_length"], 75)
+    min_sift = np.percentile(df["cut_length"], 25)
+    print('sift range:', max_sift, min_sift)
 
-    print('右手平均：', average_right)
-    print('左手平均：', average_left)
+    df = df[(df.cut_length <= max_sift)]  # filter
+    df = df[(df.cut_length >= min_sift)]  # filter
+
+    df_left = df[(df.side == 'left')]
+    df_right = df[(df.side == 'right')]
+    print('右手平均：', df_left["cut_length"].mean())
+    print('左手平均：', df_right["cut_length"].mean())
+    df.to_csv('data_event&cut/sifted/' + filename + ".csv")
 
 
 # Tracker位移
 # 按max-min来算矩形面积
 def move(filename):
     # 读取文件
-    df = pd.read_excel("data_xls/" + filename + ".xls", 0)
+    df = pd.read_csv("data_csv/" + filename + ".csv")
     df.head()
     x_max = df["lt_x"].max() if df["lt_x"].max() > df["rt_x"].max() else df["rt_x"].max()
     x_min = df["lt_x"].min() if df["lt_x"].min() < df["rt_x"].min() else df["rt_x"].min()

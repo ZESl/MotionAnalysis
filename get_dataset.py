@@ -8,15 +8,17 @@ from get_user_feature import get_all_user_feature_filtered
 # - filter data from small cut lengths
 def concat_all():
     df_list = []
-    for file in os.listdir("data_event&cut"):
-        df = pd.read_csv('data_event&cut/' + file, encoding='gbk', index_col=0)
+    for file in os.listdir("data_event&cut/sifted/"):
+        df = pd.read_csv('data_event&cut/sifted/' + file, encoding='gbk', index_col=0)
         # df = df.set_index('time stamp')
+        print(df.describe())
 
-        # define cut length filter condition
-        mean_length = df["cut_length"].mean()
-        min_length = df["cut_length"].min()
-        sift_length = mean_length - min_length
-        df = df[df.cut_length > sift_length]  # filter
+        # # define cut length filter condition
+        # # 已在get_cut.py里筛选过了
+        # mean_length = df["cut_length"].mean()
+        # min_length = df["cut_length"].min()
+        # sift_length = mean_length - min_length
+        # df = df[df.cut_length > sift_length]  # filter
 
         # resolve filename and add column to df
         uid = file.split('.')[0].split('-')[0]
