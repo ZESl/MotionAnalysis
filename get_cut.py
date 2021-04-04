@@ -148,6 +148,7 @@ def cut(filename):
 
 # Tracker位移
 # 按max-min来算矩形面积
+# 可能存在tracker断连没有数据的情况
 def move(filename):
     # 读取文件
     df = pd.read_csv("data_csv/" + filename + ".csv")

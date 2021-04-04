@@ -34,8 +34,12 @@ def convert_txt_csv(txt_path, csv_path, pid, tid):
             rt_z = rightTracker[2].strip(" ")
 
             # 假如有一个设备断连了，则这条数据作废
-            if (lc_x == 0 and lc_y == 0 and lc_z == 0) or (rc_x == 0 and rc_y == 0 and rc_z == 0) or \
-                    (lt_x == 0 and lt_y == 0 and lt_z == 0) or (rt_x == 0 and rt_y == 0 and rt_z == 0):
+            # if (lc_x == 0 and lc_y == 0 and lc_z == 0) or (rc_x == 0 and rc_y == 0 and rc_z == 0) or \
+            #         (lt_x == 0 and lt_y == 0 and lt_z == 0) or (rt_x == 0 and rt_y == 0 and rt_z == 0):
+            #     continue
+
+            # 假如左右手柄设备断连了，则这条数据作废
+            if (lc_x == 0 and lc_y == 0 and lc_z == 0) or (rc_x == 0 and rc_y == 0 and rc_z == 0):
                 continue
 
             # ["time", "lc_x", "lc_y", "lc_z", "rc_x", "rc_y", "rc_z", "lt_x", "lt_y", "lt_z", "rt_x", "rt_y", "rt_z"]
