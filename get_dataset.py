@@ -5,21 +5,10 @@ from get_user_feature import get_all_user_feature_filtered
 
 # save all motion data from folder:data_event
 # + add uid trial
-# - filter data from small cut lengths
 def concat_all():
     df_list = []
     for file in os.listdir("data_event&cut/sifted/"):
         df = pd.read_csv('data_event&cut/sifted/' + file, encoding='gbk', index_col=0)
-        # df = df.set_index('time stamp')
-        print(df.describe())
-
-        # # define cut length filter condition
-        # # 已在get_cut.py里筛选过了
-        # mean_length = df["cut_length"].mean()
-        # min_length = df["cut_length"].min()
-        # sift_length = mean_length - min_length
-        # df = df[df.cut_length > sift_length]  # filter
-
         # resolve filename and add column to df
         uid = file.split('.')[0].split('-')[0]
         trial = file.split('.')[0].split('-')[1]
@@ -65,9 +54,9 @@ def get_dataset(df):
     }
     # todo modify range
     side_op = ['left', 'right']
-    for uid in range(1, 4):  # uid: 1 2 3
-        for event_type in range(1, 4):  # event_type: 1 2 3
-            for trial in range(1, 3):  # trial: 1 2
+    for uid in range(1, 14):  # uid: 1 ~ 13
+        for event_type in range(1, 6):  # event_type: 1 2 3 4 5
+            for trial in range(1, 4):  # trial: 1 2 3
                 for side in side_op:  # side: 0 1
                     df_t = df[(df.event_type == event_type) & (df.uid == uid) & (df.trial == trial) & (df.side == side)]
                     df_dataset["uid"].append(uid)
@@ -98,8 +87,8 @@ if __name__ == '__main__':
     # include all motion data
     df_m = concat_all()
     feature_list = ['uid', 'gender', 'age', 'height', 'weight',
-                    'side', 'VR_exp', 'game_fre', 'sport_fre',
-                    'difficulty', 'enjoyment', 'fatigue']  # todo modify the columns
+                    'fre_side', 'VR_exp', 'game_fre', 'sport_fre',
+                    'difficulty', 'enjoyment', 'fatigue', 'personality']  # todo modify the columns
     df_r = add_user(df_m, feature_list)
     df_r.to_csv('Dataset/Data_motion_user.csv', encoding='gbk')
 

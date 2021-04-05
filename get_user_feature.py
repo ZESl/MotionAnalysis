@@ -17,15 +17,15 @@ def get_all_users_all_features():
             # one piece of user data
             user_data = list()
             user_data.append(line[0])  # uid
-            for i in range(6, len(line)):  # append other features
+            for i in range(1, len(line)):  # append other features
                 user_data.append(line[i])
 
             # add the user data to all-list
             all_user_data.append(user_data)
     # todo modify the columns
     all_user_data_df = pd.DataFrame(all_user_data, columns=['uid', 'gender', 'age', 'height', 'weight',
-                                                            'side', 'VR_exp', 'game_fre', 'sport_fre',
-                                                            'difficulty', 'enjoyment', 'fatigue'])
+                                                            'fre_side', 'VR_exp', 'game_fre', 'sport_fre',
+                                                            'difficulty', 'enjoyment', 'fatigue', 'personality'])
     return all_user_data_df
 
 

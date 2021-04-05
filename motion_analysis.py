@@ -8,7 +8,7 @@ def analyze_event(df, uid, event_type):
     speed_list.append(df_t['speed'].mean())
     x_cut.append(str(uid) + '-' + str(event_type))
     print('uid:', uid, ' event_type:', event_type)
-    print(df_t.describe())
+    # print(df_t.describe())
 
 
 def analyze_trial(df, uid, event_type, trial):
@@ -21,7 +21,7 @@ def analyze_trial(df, uid, event_type, trial):
 
 if __name__ == '__main__':
     # Analyze Event
-    filename = 'Data_motion.csv'
+    filename = 'Dataset/Data_motion_user.csv'
     df_all = pd.read_csv(filename, encoding='gbk')
     x_cut = []
     cut_list = []
@@ -30,15 +30,15 @@ if __name__ == '__main__':
     cut_trial_list_all = []
     speed_trial_list_all = []
     # todo modify range
-    for i in range(1, 4):  # uid
+    for i in range(1, 13):  # uid
         x_trial = []
         cut_trial_list = []
         speed_trial_list = []
-        for j in range(1, 4):  # event_type
+        for j in range(1, 6):  # event_type
             analyze_event(df_all, i, j)
 
             # Analyze Trial
-            for k in range(1, 3):  # trial
+            for k in range(1, 4):  # trial
                 analyze_trial(df_all, i, j, k)
         cut_trial_list_all.append(cut_trial_list)
         speed_trial_list_all.append(speed_trial_list)
