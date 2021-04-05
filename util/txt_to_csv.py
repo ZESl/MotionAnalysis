@@ -1,12 +1,13 @@
 import os
 import pandas as pd
-import numpy as np
+from tqdm import tqdm
 
 
 # pid: person id        tid: trial id
 # lc_x: left controller x axis
-def convert_txt_csv(txt_path, csv_path, pid, tid):
-    title = ["time", "lc_x", "lc_y", "lc_z", "rc_x", "rc_y", "rc_z", "lt_x", "lt_y", "lt_z", "rt_x", "rt_y", "rt_z"]
+def convert_txt_csv(txt_path, csv_path):
+    title = ["time", "lc_x", "lc_y", "lc_z", "rc_x", "rc_y", "rc_z", "lt_x", "lt_y", "lt_z", "rt_x", "rt_y", "rt_z",
+             "hs_x", "hs_y", "hs_z"]
 
     with open(txt_path) as file:
         lines = file.readlines()
@@ -19,6 +20,7 @@ def convert_txt_csv(txt_path, csv_path, pid, tid):
             rightController = string[2][17:-1].split(",")
             leftTracker = string[3][13:-1].split(",")
             rightTracker = string[4][14:-1].split(",")
+            headSet = string[5][9:-1].split(",")
 
             lc_x = leftController[0].strip(" ")
             lc_y = leftController[1].strip(" ")
@@ -32,14 +34,18 @@ def convert_txt_csv(txt_path, csv_path, pid, tid):
             rt_x = rightTracker[0].strip(" ")
             rt_y = rightTracker[1].strip(" ")
             rt_z = rightTracker[2].strip(" ")
-
+            hs_x = headSet[0].strip(" ")
+            hs_y = headSet[1].strip(" ")
+            hs_z = headSet[2].strip(" ")
             # 假如有一个设备断连了，则这条数据作废
             # if (lc_x == 0 and lc_y == 0 and lc_z == 0) or (rc_x == 0 and rc_y == 0 and rc_z == 0) or \
             #         (lt_x == 0 and lt_y == 0 and lt_z == 0) or (rt_x == 0 and rt_y == 0 and rt_z == 0):
             #     continue
 
-            # 假如左右手柄设备断连了，则这条数据作废
-            if (lc_x == 0 and lc_y == 0 and lc_z == 0) or (rc_x == 0 and rc_y == 0 and rc_z == 0):
+            # 假如左右手柄或头盔设备断连了，则这条数据作废
+            if (float(lc_x) == 0 and float(lc_y) == 0 and float(lc_z) == 0) or \
+                    (float(rc_x) == 0 and float(rc_y) == 0 and float(rc_z) == 0) or \
+                    (float(hs_x) == 0 and float(hs_y) == 0 and float(hs_z) == 0):
                 continue
 
             # ["time", "lc_x", "lc_y", "lc_z", "rc_x", "rc_y", "rc_z", "lt_x", "lt_y", "lt_z", "rt_x", "rt_y", "rt_z"]
@@ -55,7 +61,11 @@ def convert_txt_csv(txt_path, csv_path, pid, tid):
                      "lt_z": lt_z,
                      "rt_x": rt_x,
                      "rt_y": rt_y,
-                     "rt_z": rt_z}]
+                     "rt_z": rt_z,
+                     "hs_x": hs_x,
+                     "hs_y": hs_y,
+                     "hs_z": hs_z
+                     }]
             df = df.append(data, ignore_index=True)
         # print(df)
 
@@ -64,19 +74,19 @@ def convert_txt_csv(txt_path, csv_path, pid, tid):
         if float(lcx) > float(rcx):
             # 说明左右手反了
             df = df[["time", "rc_x", "rc_y", "rc_z", "lc_x", "lc_y", "lc_z", "lt_x", "lt_y", "lt_z", "rt_x", "rt_y",
-                     "rt_z"]]
+                     "rt_z", "hs_x", "hs_y", "hs_z"]]
 
         ltx = df.iloc[0, 7]
         rtx = df.iloc[0, 10]
         if float(ltx) > float(rtx):
             # 说明左右脚反了
             df = df[["time", "lc_x", "lc_y", "lc_z", "rc_x", "rc_y", "rc_z", "rt_x", "rt_y", "rt_z", "lt_x", "lt_y",
-                     "lt_z"]]
+                     "lt_z", "hs_x", "hs_y", "hs_z"]]
         df.to_csv(csv_path, header=title, index=False)
 
 
-for txt_file in os.listdir("../data_txt"):
-    # print(txt_file)
+for txt_file in tqdm(os.listdir("../data_txt")):
     csv_file = txt_file.split(".")[0] + ".csv"
-    info = txt_file.split(".")[0].split("-")
-    convert_txt_csv("../data_txt/" + txt_file, "../data_csv/" + csv_file, info[0], info[1])
+    # if os.path.exists("../data_csv/" + csv_file):
+    #     continue
+    convert_txt_csv("../data_txt/" + txt_file, "../data_csv/" + csv_file)
