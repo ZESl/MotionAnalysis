@@ -28,7 +28,6 @@ def curve_3d(x, y, z):
 # 动作分割，并找出相对应的VR事件，写入文件 data_event&cut/xxx.csv
 # 包括：time stamp,passed time(seconds),side,cut length,event type
 def cut(filename):
-
     # write to data_event&cut
     f = open('data_event&cut/raw/' + filename + ".csv", 'w', encoding='utf-8', newline='')
     csv_writer = csv.writer(f)
@@ -129,8 +128,15 @@ def cut(filename):
     print(df.describe())
 
     # define cut length filter condition
-    max_sift = np.percentile(df["cut_length"], 85)
-    min_sift = np.percentile(df["cut_length"], 15)
+    # 直接筛除某个范围的值
+    # max_sift = np.percentile(df["cut_length"], 85)
+    # min_sift = np.percentile(df["cut_length"], 15)
+
+    # 用箱型图的上下四分位来筛除离异值
+    q3 = np.percentile(df["cut_length"], 75)
+    q1 = np.percentile(df["cut_length"], 25)
+    max_sift = q3 + 1.5 * (q3 - q1)
+    min_sift = q1 - 1.5 * (q3 - q1)
     print('sift range:', max_sift, min_sift)
 
     df = df[(df.cut_length <= max_sift)]  # filter
