@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 
 # 通过四分位把三个运动特征映射到为 0 1 2 3
-def map_values(dff, index, q3, q2, q1):
+def map_values_quarter(dff, index, q3, q2, q1):
     for row in range(dff.shape[0]):
         value = float(dff.loc[row, index])
         # print(value)
@@ -19,6 +19,16 @@ def map_values(dff, index, q3, q2, q1):
     return dff
 
 
+def map_values_half(dff, index, q2):
+    for row in range(dff.shape[0]):
+        value = float(dff.loc[row, index])
+        if value < q2:
+            dff.loc[row, index] = False
+        else:
+            dff.loc[row, index] = True
+    return dff
+
+
 if __name__ == '__main__':
     df = pd.read_csv("../Dataset/Data_dataset.csv")
 
@@ -26,21 +36,31 @@ if __name__ == '__main__':
     cut_q2 = np.percentile(df.dropna()["cut_mean"], 50)
     cut_q1 = np.percentile(df.dropna()["cut_mean"], 25)
     print(cut_q3, cut_q2, cut_q1)
-    df = map_values(df, "cut_mean", cut_q3, cut_q2, cut_q1)
+    df_1 = map_values_quarter(df, "cut_mean", cut_q3, cut_q2, cut_q1)
+    df_2 = map_values_half(df, "cut_mean", cut_q2)
 
     speed_q3 = np.percentile(df.dropna()["speed_mean"], 75)
     speed_q2 = np.percentile(df.dropna()["speed_mean"], 50)
     speed_q1 = np.percentile(df.dropna()["speed_mean"], 25)
     print(speed_q3, speed_q2, speed_q1)
-    df = map_values(df, "speed_mean", speed_q3, speed_q2, speed_q1)
+    df_1 = map_values_quarter(df_1, "speed_mean", speed_q3, speed_q2, speed_q1)
+    df_2 = map_values_half(df_2, "speed_mean", cut_q2)
 
     space_q3 = np.percentile(df.dropna()["space_mean"], 75)
     space_q2 = np.percentile(df.dropna()["space_mean"], 50)
     space_q1 = np.percentile(df.dropna()["space_mean"], 25)
     print(space_q3, space_q2, space_q1)
-    df = map_values(df, "space_mean", space_q3, space_q2, space_q1)
+    df_1 = map_values_quarter(df_1, "space_mean", space_q3, space_q2, space_q1)
+    df_2 = map_values_half(df_2, "space_mean", cut_q2)
 
-    df = df[["side", "event", "trial",
-             "gender", "age", "height", "weight", "fre_side", "VR_exp", "game_fre", "sport_fre",
-             "cut_mean", "speed_mean", "space_mean"]]
-    df.to_csv("../Dataset/RIPPER.csv", encoding='gbk')
+    df_1 = df_1[["side", "event", "trial",
+                 "gender", "age", "height", "weight", "fre_side", "VR_exp", "game_fre", "sport_fre",
+                 "cut_mean", "speed_mean", "space_mean"]]
+    df_1 = df_1[df_1["event"] != 4]
+    df_2 = df_2[["side", "event", "trial",
+                 "gender", "age", "height", "weight", "fre_side", "VR_exp", "game_fre", "sport_fre",
+                 "cut_mean", "speed_mean", "space_mean"]]
+    df_2 = df_2[df_2["event"] != 4]
+
+    df_1.to_csv("../Dataset/RIPPER_quarter.csv", encoding='gbk')
+    df_2.to_csv("../Dataset/RIPPER_half.csv", encoding='gbk')

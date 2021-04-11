@@ -10,12 +10,10 @@ import time
 from sklearn.metrics import roc_auc_score
 
 pd.set_option("chained_assignment", None)
-# data_frame = pd.read_csv("heart_data.csv")
-data_frame = pd.read_csv("Dataset/Data_ripper.csv")
+data_frame = pd.read_csv("../Dataset/RIPPER_half.csv")
 # Part a
 
-# data = data_frame[["age", "cp", "trestbps", "thalach", "chol", "target"]]
-data = data_frame
+data = data_frame[["side", "event", "trial", "gender", "fre_side", "VR_exp", "game_fre", "sport_fre", "cut_mean"]]
 
 # Part b
 
@@ -31,7 +29,7 @@ for i in range(len(categorical_columns)):
 
 # Part d
 # todo 改data.columns[0:？]
-dataset = data[data.columns[0:7]]
+dataset = data[data.columns[0:9]]
 target = data["cut_mean"]
 ripper_dataset = data
 x_train, x_test, y_train, y_test = train_test_split(dataset, target, test_size=0.2, random_state=123)
@@ -51,7 +49,7 @@ ripper_start_time = time.time()
 ripper_clf.fit(ripper_train, class_feat="cut_mean", random_state=123)
 ripper_predict = ripper_clf.predict(ripper_test)
 ripper_run_time = time.time() - ripper_start_time
-print("Accuracy with Ripper: ", accuracy_score(ripper_test[ripper_test.columns[7]], ripper_predict))
+print("Accuracy with Ripper: ", accuracy_score(ripper_test[ripper_test.columns[8]], ripper_predict))
 print(ripper_clf.ruleset_.out_pretty())
 
 # Part f
@@ -67,7 +65,7 @@ print("Accuracy with Entropy: ", accuracy_score(y_test, entropy_pred_data))
 
 # Part g
 # todo ripper_test.columns[？]
-auc_ripper = roc_auc_score(ripper_test[ripper_test.columns[7]], ripper_predict)
+auc_ripper = roc_auc_score(ripper_test[ripper_test.columns[8]], ripper_predict)
 auc_entropy = roc_auc_score(y_test, entropy_pred_data)
 print("")
 print("AUC value for Ripper" + " ------------>  " + str(auc_ripper))
