@@ -183,12 +183,9 @@ def convert_txt_csv_with_speed(txt_path, csv_path):
 if __name__ == '__main__':
     for txt_file in tqdm(os.listdir("../data_txt")):
         csv_file = txt_file.split(".")[0] + ".csv"
-        # if os.path.exists("../data_csv/" + csv_file):
-        #     continue
-        # if int(txt_file.split(".")[0].split("-")[0]) <= 20:
-        #     convert_txt_csv("../data_txt/" + txt_file, "../data_csv/" + csv_file)
-        # else:
-        #     convert_txt_csv_with_speed("../data_txt/" + txt_file, "../data_csv/" + csv_file)
-        if os.path.exists("../data_csv/" + csv_file) or int(txt_file.split(".")[0].split("-")[0]) <= 20:
+        if os.path.exists("../data_csv/" + csv_file):
             continue
-        convert_txt_csv_with_speed("../data_txt/" + txt_file, "../data_csv/" + csv_file)
+        if int(txt_file.split(".")[0].split("-")[0]) <= 20:
+            convert_txt_csv("../data_txt/" + txt_file, "../data_csv/" + csv_file)
+        else:
+            convert_txt_csv_with_speed("../data_txt/" + txt_file, "../data_csv/" + csv_file)

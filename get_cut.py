@@ -166,6 +166,8 @@ def move(filename):
 
 if __name__ == '__main__':
     for txt_file in os.listdir("data_csv"):
+        if os.path.exists("data_event&cut/sifted/" + txt_file.split(".")[0] + ".csv"):
+            continue
         print('--- ' + txt_file + ' ---')
         file_name = txt_file.split(".")[0]
         cut(file_name)
