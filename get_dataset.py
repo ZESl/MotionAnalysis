@@ -136,4 +136,4 @@ if __name__ == '__main__':
                 'fre_side', 'VR_exp', 'game_fre', 'sport_fre',
                 'difficulty', 'enjoyment', 'fatigue', 'personality']
     df_d = get_dataset(features)
-    df_d.to_csv('Dataset/Data_dataset_user.csv', encoding='gbk')
+    df_d.to_csv('Dataset/Data_dataset.csv', encoding='gbk')
