@@ -40,5 +40,28 @@ def get_user_by_id(all_user_data, uid):
     return all_user_data[uid - 1]
 
 
-# if __name__ == '__main__':
-#     print(get_user_by_id(get_all_users(), 1))
+def generate_user_feature():
+    df = pd.read_csv("data_user/user_pre.csv", index_col=0)
+    # change to 0 and 1
+    df.gender = df.gender.apply(lambda x: 0 if x == 1 else 1)
+    df.side = df.side.apply(lambda x: 0 if x == 1 else 1)
+    df.personality = df.personality.apply(lambda x: 0 if x == 1 else 1)
+
+    # multiple ranges
+    df.age = df.age.apply(lambda x: 0 if x < 20 else (1 if x < 22 else 2))
+    df.height = df.height.apply(lambda x: 0 if x < 160 else (1 if x < 170 else (2 if x < 180 else 3)))
+    df.weight = df.weight.apply(lambda x: 0 if x < 50 else (1 if x < 60 else (2 if x < 70 else (3 if x < 80 else 4))))
+
+    # bool values
+    df.VR_exp = df.VR_exp.apply(lambda x: 0 if x <= 1 else 1)
+    df.game_fre = df.game_fre.apply(lambda x: 0 if x <= 2 else 1)
+    df.sport_fre = df.sport_fre.apply(lambda x: 0 if x <= 3 else 1)
+    df.difficulty = df.difficulty.apply(lambda x: 0 if x <= 2 else 1)
+    df.enjoyment = df.enjoyment.apply(lambda x: 0 if x <= 3 else 1)
+    df.fatigue = df.fatigue.apply(lambda x: 0 if x <= 2 else 1)
+
+    df.to_csv("data_user/user.csv", encoding='gbk')
+
+
+if __name__ == '__main__':
+    generate_user_feature()
