@@ -84,7 +84,7 @@ def get_dataset(feature_list):
     side_op = ['left', 'right']
 
     # todo modify range
-    for uid_t in range(1, 35):  # uid: 1 ~ 34
+    for uid_t in range(1, 42):  # uid: 1 ~ 41
         for event_type_t in range(1, 6):  # event_type: 1 2 3 4 5
             for trial_t in range(1, 4):  # trial: 1 2 3
                 for side_t in side_op:  # side: 0 1
@@ -134,6 +134,6 @@ if __name__ == '__main__':
 
     features = ['uid', 'gender', 'age', 'height', 'weight',
                 'fre_side', 'VR_exp', 'game_fre', 'sport_fre',
-                'difficulty', 'enjoyment', 'fatigue', 'personality']
+                'difficulty', 'enjoyment', 'fatigue', 'personality', 'familiarity']
     df_d = get_dataset(features)
     df_d.to_csv('Dataset/Data_dataset.csv', encoding='gbk')

@@ -55,7 +55,7 @@ if __name__ == '__main__':
 
     df_1 = df_1[["side", "event", "trial",
                  "gender", "age", "height", "weight", "fre_side", "VR_exp", "game_fre", "sport_fre",
-                 "difficulty", "enjoyment", "fatigue", "personality",
+                 "difficulty", "enjoyment", "fatigue", "personality", "familiarity",
                  "cut_mean", "speed_mean", "space_mean"]]
 
     df_1 = df_1[df_1["event"] != 4]
@@ -63,7 +63,7 @@ if __name__ == '__main__':
 
     df_2 = df_2[["side", "event", "trial",
                  "gender", "age", "height", "weight", "fre_side", "VR_exp", "game_fre", "sport_fre",
-                 "difficulty", "enjoyment", "fatigue", "personality",
+                 "difficulty", "enjoyment", "fatigue", "personality", "familiarity",
                  "cut_mean", "speed_mean", "space_mean"]]
     df_2 = df_2[df_2["event"] != 4]
     df_2.to_csv("../Dataset/RIPPER_half.csv", encoding='gbk')

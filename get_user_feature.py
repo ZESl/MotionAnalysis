@@ -25,7 +25,8 @@ def get_all_users_all_features():
     # todo modify the columns
     all_user_data_df = pd.DataFrame(all_user_data, columns=['uid', 'gender', 'age', 'height', 'weight',
                                                             'fre_side', 'VR_exp', 'game_fre', 'sport_fre',
-                                                            'difficulty', 'enjoyment', 'fatigue', 'personality'])
+                                                            'difficulty', 'enjoyment', 'fatigue', 'personality',
+                                                            'familiarity'])
     return all_user_data_df
 
 

@@ -8,6 +8,6 @@ if __name__ == '__main__':
             df.iloc[row, col] = df.columns.tolist()[col] + str(df.iloc[row, col])
     df = df[["side", "event", "trial",
              "gender", "age", "height", "weight", "VR_exp", "game_fre", "sport_fre",
-             "difficulty", "enjoyment", "fatigue", "personality",
+             "difficulty", "enjoyment", "fatigue", "personality", "familiarity",
              "cut_mean", "speed_mean", "space_mean"]]
     df.to_csv("../Dataset/APRIORI.csv", encoding='gbk')
