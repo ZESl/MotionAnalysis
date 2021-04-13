@@ -30,7 +30,7 @@ def map_values_half(df_t, index, q2):
 
 
 if __name__ == '__main__':
-    df = pd.read_csv("../Dataset/Data_dataset.csv", index_col=0)
+    df = pd.read_csv("../Dataset/Data_dataset_tmp.csv")
 
     cut_q3 = np.percentile(df.dropna()["cut_mean"], 75)
     cut_q2 = np.percentile(df.dropna()["cut_mean"], 50)
@@ -46,24 +46,33 @@ if __name__ == '__main__':
     df_1 = map_values_quarter(df_1, "speed_mean", speed_q3, speed_q2, speed_q1)
     df_2 = map_values_half(df_2, "speed_mean", speed_q2)
 
-    space_q3 = np.percentile(df.dropna()["space_mean"], 75)
-    space_q2 = np.percentile(df.dropna()["space_mean"], 50)
-    space_q1 = np.percentile(df.dropna()["space_mean"], 25)
+    space_q3 = np.percentile(df.dropna()["space_max"], 75)
+    space_q2 = np.percentile(df.dropna()["space_max"], 50)
+    space_q1 = np.percentile(df.dropna()["space_max"], 25)
     print(space_q3, space_q2, space_q1)
-    df_1 = map_values_quarter(df_1, "space_mean", space_q3, space_q2, space_q1)
-    df_2 = map_values_half(df_2, "space_mean", space_q2)
+    df_1 = map_values_quarter(df_1, "space_max", space_q3, space_q2, space_q1)
+    df_2 = map_values_half(df_2, "space_max", space_q2)
 
-    df_1 = df_1[["side", "event", "trial",
-                 "gender", "age", "height", "weight", "fre_side", "VR_exp", "game_fre", "sport_fre",
-                 "difficulty", "enjoyment", "fatigue", "personality", "familiarity",
-                 "cut_mean", "speed_mean", "space_mean"]]
+    # with or without "trial", "side",
+    df_1_full = df_1[["event",
+                      "gender", "age", "height", "weight", "fre_side", "VR_exp", "game_fre", "sport_fre",
+                      "difficulty", "enjoyment", "fatigue", "personality", "familiarity",
+                      "cut_mean", "speed_mean", "space_max"]]
+    df_1_full.to_csv("../Dataset/RIPPER_full_quarter.csv", encoding='gbk')
 
-    df_1 = df_1[df_1["event"] != 4]
-    df_1.to_csv("../Dataset/RIPPER_quarter.csv", encoding='gbk')
+    df_2_full = df_2[["event",
+                      "gender", "age", "height", "weight", "fre_side", "VR_exp", "game_fre", "sport_fre",
+                      "difficulty", "enjoyment", "fatigue", "personality", "familiarity",
+                      "cut_mean", "speed_mean", "space_max"]]
+    df_2_full.to_csv("../Dataset/RIPPER_full_half.csv", encoding='gbk')
 
-    df_2 = df_2[["side", "event", "trial",
-                 "gender", "age", "height", "weight", "fre_side", "VR_exp", "game_fre", "sport_fre",
-                 "difficulty", "enjoyment", "fatigue", "personality", "familiarity",
-                 "cut_mean", "speed_mean", "space_mean"]]
-    df_2 = df_2[df_2["event"] != 4]
-    df_2.to_csv("../Dataset/RIPPER_half.csv", encoding='gbk')
+    # spearman 相关性筛选后的
+    df_1_spearman = df_1[["gender", "height", "weight", "VR_exp", "sport_fre",
+                          "fatigue", "personality", "familiarity",
+                          "cut_mean", "speed_mean", "space_max"]]
+    df_1_spearman.to_csv("../Dataset/RIPPER_spearman_quarter.csv", encoding='gbk')
+
+    df_2_spearman = df_2[["gender", "height", "weight", "VR_exp", "sport_fre",
+                          "fatigue", "personality", "familiarity",
+                          "cut_mean", "speed_mean", "space_max"]]
+    df_2_spearman.to_csv("../Dataset/RIPPER_spearman_half.csv", encoding='gbk')

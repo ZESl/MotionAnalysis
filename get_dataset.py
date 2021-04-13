@@ -84,7 +84,7 @@ def get_dataset(feature_list):
     side_op = ['left', 'right']
 
     # todo modify range
-    for uid_t in range(1, 42):  # uid: 1 ~ 41
+    for uid_t in range(1, 47):  # uid: 1 ~ 46
         for event_type_t in range(1, 6):  # event_type: 1 2 3 4 5
             for trial_t in range(1, 4):  # trial: 1 2 3
                 for side_t in side_op:  # side: 0 1
@@ -149,7 +149,7 @@ def get_dataset_tmp(feature_list):
     df_space = pd.read_csv('Dataset/Data_space.csv', encoding='gbk')
     df_motion = pd.read_csv('Dataset/Data_motion.csv', encoding='gbk')
 
-    for uid_t in range(1, 42):  # uid: 1 ~ 41
+    for uid_t in range(1, 46):  # uid: 1 ~ 47
         for event_type_t in range(1, 6):  # event_type: 1 2 3 4 5
             df_motion_t = df_motion[(df_motion['event_type'] == event_type_t) & (df_motion['uid'] == uid_t)]
             df_space_t = df_space[
@@ -191,9 +191,9 @@ if __name__ == '__main__':
                 'fre_side', 'VR_exp', 'game_fre', 'sport_fre',
                 'difficulty', 'enjoyment', 'fatigue', 'personality', 'familiarity']
     df_d = get_dataset(features)
-    df_d = df_d[df_d["event"] != 4]
+    df_d = df_d.dropna()
     df_d.to_csv('Dataset/Data_dataset.csv', encoding='gbk', index=None)
 
     df_d_tmp = get_dataset_tmp(features)
-    df_d_tmp = df_d_tmp[df_d_tmp["event"] != 4]
+    df_d_tmp = df_d_tmp.dropna()
     df_d_tmp.to_csv('Dataset/Data_dataset_tmp.csv', encoding='gbk', index=None)

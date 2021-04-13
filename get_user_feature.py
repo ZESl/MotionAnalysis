@@ -48,9 +48,9 @@ def generate_user_feature():
     df.personality = df.personality.apply(lambda x: 0 if x == 1 else 1)
 
     # multiple ranges
-    df.age = df.age.apply(lambda x: 0 if x < 20 else (1 if x < 22 else 2))
+    df.age = df.age.apply(lambda x: 0 if x <= 20 else 1)
     df.height = df.height.apply(lambda x: 0 if x < 160 else (1 if x < 170 else (2 if x < 180 else 3)))
-    df.weight = df.weight.apply(lambda x: 0 if x < 50 else (1 if x < 60 else (2 if x < 70 else (3 if x < 80 else 4))))
+    df.weight = df.weight.apply(lambda x: 0 if x < 55 else (1 if x < 70 else (2 if x < 85 else 3)))
 
     # bool values
     df.VR_exp = df.VR_exp.apply(lambda x: 0 if x <= 1 else 1)

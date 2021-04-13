@@ -23,6 +23,22 @@ def space(filename):
 
     df_space = pd.DataFrame(space_list, columns=['time', 'l_space', 'r_space'])
 
+    # sift left
+    q3 = np.percentile(df_space["l_space"], 75)
+    q1 = np.percentile(df_space["l_space"], 25)
+    max_sift = q3 + 1.5 * (q3 - q1)
+    min_sift = q1 - 1.5 * (q3 - q1)
+    df_space = df_space[(df_space.l_space <= max_sift)]  # filter
+    df_space = df_space[(df_space.l_space >= min_sift)]  # filter
+
+    # sift right
+    q3 = np.percentile(df_space["r_space"], 75)
+    q1 = np.percentile(df_space["r_space"], 25)
+    max_sift = q3 + 1.5 * (q3 - q1)
+    min_sift = q1 - 1.5 * (q3 - q1)
+    df_space = df_space[(df_space.r_space <= max_sift)]  # filter
+    df_space = df_space[(df_space.r_space >= min_sift)]  # filter
+
     all_event = get_all_event()
     space_event_list = []
     i = 0
@@ -42,6 +58,7 @@ def space(filename):
                                  df_tmp['r_space'].min(), df_tmp['r_space'].mean(), df_tmp['r_space'].max()])
     df_space_event = pd.DataFrame(space_event_list, columns=['event', 'l_space_min', 'l_space_mean', 'l_space_max',
                                                              'r_space_min', 'r_space_mean', 'r_space_max'])
+
     df_space_event.to_csv("data_event&space/" + filename + ".csv", index=False)
 
 

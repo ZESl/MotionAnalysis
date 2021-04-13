@@ -57,7 +57,8 @@ PROCESS
 2. get_cut.py
 3. get_space.py
 4. get_speed.py
-5. get_dataset.py
-6. apriori/ripper
+5. generate_user_feature()
+6. get_dataset.py
+7. apriori/ripper
 
 可视化：draw_cut draw_box motion_analysis

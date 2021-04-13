@@ -10,10 +10,13 @@ import time
 from sklearn.metrics import roc_auc_score
 
 pd.set_option("chained_assignment", None)
-data_frame = pd.read_csv("../Dataset/RIPPER_half.csv")
+data_frame = pd.read_csv("../Dataset/RIPPER_spearman_half.csv", index_col=0)
 
 # Part a
-data = data_frame[["side", "event", "trial", "gender", "fre_side", "VR_exp", "game_fre", "sport_fre", "cut_mean"]]
+# "cut_mean", "speed_mean", "space_max"
+data = data_frame[["gender", "height", "weight", "VR_exp",
+                   "fatigue", "personality", "familiarity",
+                   "cut_mean"]]
 
 # Part b
 # data.age = data.age.apply(lambda x: "younger person" if x <= 55 else "older person")
@@ -30,8 +33,8 @@ for i in range(len(categorical_columns)):
 dataset = data[data.columns[0:count]]
 target = data["cut_mean"]
 ripper_dataset = data
-x_train, x_test, y_train, y_test = train_test_split(dataset, target, test_size=0.2, random_state=123)
-ripper_train, ripper_test = train_test_split(ripper_dataset, test_size=0.2, random_state=123)
+x_train, x_test, y_train, y_test = train_test_split(dataset, target, test_size=0.2, random_state=42)
+ripper_train, ripper_test = train_test_split(ripper_dataset, test_size=0.2, random_state=42)
 print("Train size for Decision Tree" + " ------------>  " + str(x_train.shape))
 print("Test size for Decision Tree" + "  ------------>  " + str(x_test.shape))
 print("Train size for Ripper" + " ------------>  " + str(ripper_train.shape))
@@ -42,7 +45,7 @@ print("")
 print("Ripper Algorithm")
 ripper_clf = lw.RIPPER()
 ripper_start_time = time.time()
-ripper_clf.fit(ripper_train, class_feat="cut_mean", random_state=123)
+ripper_clf.fit(ripper_train, class_feat="cut_mean", random_state=42)
 ripper_predict = ripper_clf.predict(ripper_test)
 ripper_run_time = time.time() - ripper_start_time
 print("Accuracy with Ripper: ", accuracy_score(ripper_test[ripper_test.columns[count - 1]], ripper_predict))
@@ -51,7 +54,7 @@ print(ripper_clf.ruleset_.out_pretty())
 # Part f
 print("")
 print("Decision Tree with Entropy")
-entropy_data = DecisionTreeClassifier(criterion="entropy", random_state=123, max_depth=5)
+entropy_data = DecisionTreeClassifier(criterion="entropy", random_state=42, max_depth=5)
 entropy_start_time = time.time()
 entropy_data = entropy_data.fit(x_train, y_train)
 entropy_pred_data = entropy_data.predict(x_test)
