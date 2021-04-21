@@ -8,8 +8,6 @@ SECOND COLUMN: EVENT TYPE
 
 *Event 2: 单手在身旁切割（远距离）
 
-*Event 3: 单手反手在身前切割
+*Event 3: 单手反手切割动作
 
-*Event 4: 单手反手在身旁切割
-
-*Event 5: 双手切割动作
+*Event 4: 双手切割动作
