@@ -31,7 +31,8 @@ def cut(filename):
     # write to data_event&cut
     f = open('data_event&cut/raw/' + filename + ".csv", 'w', encoding='utf-8', newline='')
     csv_writer = csv.writer(f)
-    csv_writer.writerow(['timestamp', 'passed_time', 'side', 'cut_length', 'time', 'speed', 'event_type'])
+    csv_writer.writerow(
+        ['timestamp', 'passed_time', 'side', 'cut_length', 'time', 'speed', 'event_type', 'start', 'end'])
 
     # read
     df = pd.read_csv("data_csv/" + filename + ".csv")
@@ -58,8 +59,12 @@ def cut(filename):
     l_t = []
     r_t = []
 
+    # 存放帧数
+    l_s = []
+    r_s = []
+
     # 判断静止状态的阈值
-    threshold = 0.02
+    threshold = 0.005
     # 迭代所有的行
     for row in range(1, df.shape[0]):
         # 当前行与上一行的差
@@ -76,51 +81,57 @@ def cut(filename):
         # 左右手分开计算
         # 左手
         # if abs(lc_temp_x) >= threshold or abs(lc_temp_y) >= threshold or abs(lc_temp_z) >= threshold:
-        if abs(lc_temp_x) + abs(lc_temp_y) + abs(lc_temp_z) >= threshold:
+        if float(abs(lc_temp_x) + abs(lc_temp_y) + abs(lc_temp_z)) >= float(threshold):
+            l_s.append(row)
             l_t.append(cur_time)
             l_x.append(float(df.iloc[row, 1]))
             l_y.append(float(df.iloc[row, 2]))
             l_z.append(float(df.iloc[row, 3]))
         else:
             if len(l_x) > 2:
-                curve = curve_3d(l_x, l_y, l_z)
-                if curve > 0.1:
-                    left.append(curve)
-                    event = get_event_by_time(all_event, passed_time)
-                    time = time_sub_ms(l_t[0], cur_time)
-                    speed = float(curve / time) if time > 0 else -1  # unit: m/s
+                curve_x = curve_3d(l_x, l_y, l_z)
+                if curve_x > 0.1:
+                    left.append(curve_x)
+                    event_x = get_event_by_time(all_event, passed_time)
+                    time_x = time_sub_ms(l_t[0], cur_time)
+                    speed_x = float(curve_x / time_x) if time_x > 0 else -1  # unit: m/s
                     # print("----pass time:" + str(passed_time) + "----")
                     # print("event type:" + str(event))
                     # print("左手三维空间曲线长度：{:.4f}".format(curve))
-                    csv_writer.writerow([cur_time, passed_time, 'left', curve, time, speed, event])
+                    csv_writer.writerow(
+                        [cur_time, passed_time, 'left', curve_x, time_x, speed_x, event_x, l_s[0], l_s[-1]])
             l_x = []
             l_y = []
             l_z = []
             l_t = []
+            l_s = []
 
         # 右手
         # if abs(rc_temp_x) >= threshold or abs(rc_temp_y) >= threshold or abs(rc_temp_z) >= threshold:
-        if abs(rc_temp_x) + abs(rc_temp_y) + abs(rc_temp_z) >= threshold:
+        if float(abs(rc_temp_x) + abs(rc_temp_y) + abs(rc_temp_z)) >= float(threshold):
+            r_s.append(row)
             r_t.append(cur_time)
             r_x.append(float(df.iloc[row, 4]))
             r_y.append(float(df.iloc[row, 5]))
             r_z.append(float(df.iloc[row, 6]))
         else:
             if len(r_x) > 2:
-                curve = curve_3d(r_x, r_y, r_z)
-                if curve > 0.1:
-                    right.append(curve)
-                    event = get_event_by_time(all_event, passed_time)
-                    time = time_sub_ms(r_t[0], cur_time)
-                    speed = float(curve / time) if time > 0 else -1  # unit: m/s
+                curve_y = curve_3d(r_x, r_y, r_z)
+                if curve_y > 0.1:
+                    right.append(curve_y)
+                    event_y = get_event_by_time(all_event, passed_time)
+                    time_y = time_sub_ms(r_t[0], cur_time)
+                    speed_y = float(curve_y / time_y) if time_y > 0 else -1  # unit: m/s
                     # print("----pass time:" + str(passed_time) + "----")
                     # print("event type:" + str(event))
                     # print("右手三维空间曲线长度：{:.4f}".format(curve))
-                    csv_writer.writerow([cur_time, passed_time, 'right', curve, time, speed, event])
+                    csv_writer.writerow(
+                        [cur_time, passed_time, 'right', curve_y, time_y, speed_y, event_y, r_s[0], r_s[-1]])
             r_x = []
             r_y = []
             r_z = []
             r_t = []
+            r_s = []
 
     f.close()
 

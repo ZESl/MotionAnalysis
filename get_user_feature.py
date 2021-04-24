@@ -45,7 +45,7 @@ def generate_user_feature():
     # change to 0 and 1
     df.gender = df.gender.apply(lambda x: 0 if x == 1 else 1)
     df.side = df.side.apply(lambda x: 0 if x == 1 else 1)
-    df.personality = df.personality.apply(lambda x: 0 if x == 1 else 1)
+    df.personality = df.personality.apply(lambda x: 1 if x == 1 else 0)
 
     # multiple ranges
     df.age = df.age.apply(lambda x: 0 if x <= 20 else 1)

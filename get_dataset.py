@@ -84,8 +84,8 @@ def get_dataset(feature_list):
     side_op = ['left', 'right']
 
     # todo modify range
-    for uid_t in range(1, 47):  # uid: 1 ~ 46
-        for event_type_t in range(1, 6):  # event_type: 1 2 3 4 5
+    for uid_t in range(1, 63):  # uid: 1 ~ 62
+        for event_type_t in range(1, 5):  # event_type: 1 2 3 4
             for trial_t in range(1, 4):  # trial: 1 2 3
                 for side_t in side_op:  # side: 0 1
                     df_motion_t = df_motion[(df_motion['event_type'] == event_type_t) & (df_motion['uid'] == uid_t) & (
@@ -149,8 +149,8 @@ def get_dataset_tmp(feature_list):
     df_space = pd.read_csv('Dataset/Data_space.csv', encoding='gbk')
     df_motion = pd.read_csv('Dataset/Data_motion.csv', encoding='gbk')
 
-    for uid_t in range(1, 46):  # uid: 1 ~ 47
-        for event_type_t in range(1, 6):  # event_type: 1 2 3 4 5
+    for uid_t in range(1, 63):  # uid: 1 ~ 62
+        for event_type_t in range(1, 5):  # event_type: 1 2 3 4
             df_motion_t = df_motion[(df_motion['event_type'] == event_type_t) & (df_motion['uid'] == uid_t)]
             df_space_t = df_space[
                 (df_space.event == event_type_t) & (df_space.uid == uid_t)]
