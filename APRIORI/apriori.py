@@ -181,7 +181,7 @@ if __name__ == "__main__":
     # minConfidence = options.minC
     inFile = dataFromFile("../Dataset/APRIORI.csv")
     minSupport = 0.3
-    minConfidence = 0.7
+    minConfidence = 0.8
     items, rules = runApriori(inFile, minSupport, minConfidence)
 
     printResults(items, rules)

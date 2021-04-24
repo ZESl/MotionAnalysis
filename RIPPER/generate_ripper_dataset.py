@@ -67,12 +67,14 @@ if __name__ == '__main__':
     df_2_full.to_csv("../Dataset/RIPPER_full_half.csv", encoding='gbk')
 
     # spearman 相关性筛选后的
-    df_1_spearman = df_1[["gender", "height", "weight", "VR_exp", "sport_fre",
-                          "fatigue", "personality", "familiarity",
+    df_1_spearman = df_1[["event",
+                          "age", "height", "weight", "VR_exp", "sport_fre",
+                          "personality", "familiarity",
                           "cut_mean", "speed_mean", "space_max"]]
     df_1_spearman.to_csv("../Dataset/RIPPER_spearman_quarter.csv", encoding='gbk')
 
-    df_2_spearman = df_2[["gender", "height", "weight", "VR_exp", "sport_fre",
-                          "fatigue", "personality", "familiarity",
+    df_2_spearman = df_2[["event",
+                          "age", "height", "weight", "VR_exp", "sport_fre",
+                          "personality", "familiarity",
                           "cut_mean", "speed_mean", "space_max"]]
     df_2_spearman.to_csv("../Dataset/RIPPER_spearman_half.csv", encoding='gbk')

@@ -14,8 +14,8 @@ data_frame = pd.read_csv("../Dataset/RIPPER_spearman_half.csv", index_col=0)
 
 # Part a
 # "cut_mean", "speed_mean", "space_max"
-data = data_frame[["gender", "height", "weight", "VR_exp",
-                   "fatigue", "personality", "familiarity",
+data = data_frame[["age", "height", "weight", "VR_exp", "sport_fre",
+                   "personality", "familiarity",
                    "cut_mean"]]
 
 # Part b
