@@ -19,8 +19,9 @@ if __name__ == '__main__':
     # plt.show()
 
     df = pd.read_csv("../Dataset/Data_dataset.csv")
-    df_df = df[["cut_mean", "speed_mean", "space_mean"]]
-    df_df.plot.box(title="Motion Features Box")
+    df_df = df[["cut_mean", "speed_mean", "space_max"]]
+    # df_df.plot.box(title="Motion Features Box")
+    df_df.plot.box()
     plt.grid(linestyle="--", alpha=0.3)
     plt.savefig("../images/Motion Features Box.png")
     plt.show()
