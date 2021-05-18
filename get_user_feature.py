@@ -4,7 +4,7 @@ import pandas as pd
 
 # return a dataframe given all features of all users
 def get_all_users_all_features():
-    with open('data_user/user.csv', 'r', encoding='utf-8') as csv_file:
+    with open('data_user/user_pre.csv', 'r', encoding='utf-8') as csv_file:
         csv_file = csv.reader(csv_file)
         all_user_data = []
         flag = True

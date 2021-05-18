@@ -16,7 +16,7 @@ data_frame = pd.read_csv("../Dataset/RIPPER_spearman_half.csv", index_col=0)
 # "cut_mean", "speed_mean", "space_max"
 data = data_frame[["age", "height", "weight", "VR_exp", "sport_fre",
                    "personality", "familiarity",
-                   "cut_mean"]]
+                   "space_max_reverse"]]
 
 # Part b
 # data.age = data.age.apply(lambda x: "younger person" if x <= 55 else "older person")
@@ -31,7 +31,7 @@ for i in range(len(categorical_columns)):
 
 # Part d
 dataset = data[data.columns[0:count]]
-target = data["cut_mean"]
+target = data["space_max_reverse"]
 ripper_dataset = data
 x_train, x_test, y_train, y_test = train_test_split(dataset, target, test_size=0.2, random_state=42)
 ripper_train, ripper_test = train_test_split(ripper_dataset, test_size=0.2, random_state=42)
@@ -45,7 +45,7 @@ print("")
 print("Ripper Algorithm")
 ripper_clf = lw.RIPPER()
 ripper_start_time = time.time()
-ripper_clf.fit(ripper_train, class_feat="cut_mean", random_state=42)
+ripper_clf.fit(ripper_train, class_feat="space_max_reverse", random_state=42)
 ripper_predict = ripper_clf.predict(ripper_test)
 ripper_run_time = time.time() - ripper_start_time
 print("Accuracy with Ripper: ", accuracy_score(ripper_test[ripper_test.columns[count - 1]], ripper_predict))

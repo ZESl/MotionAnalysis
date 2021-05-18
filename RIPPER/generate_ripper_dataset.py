@@ -53,28 +53,35 @@ if __name__ == '__main__':
     df_1 = map_values_quarter(df_1, "space_max", space_q3, space_q2, space_q1)
     df_2 = map_values_half(df_2, "space_max", space_q2)
 
+    space_mean_q3 = np.percentile(df.dropna()["space_mean"], 75)
+    space_mean_q2 = np.percentile(df.dropna()["space_mean"], 50)
+    space_mean_q1 = np.percentile(df.dropna()["space_mean"], 25)
+    print(space_mean_q3, space_mean_q2, space_mean_q1)
+    df_1 = map_values_quarter(df_1, "space_mean", space_mean_q3, space_mean_q2, space_mean_q1)
+    df_2 = map_values_half(df_2, "space_mean", space_mean_q2)
+
     # with or without "trial", "side",
     df_1_full = df_1[["event",
                       "gender", "age", "height", "weight", "fre_side", "VR_exp", "game_fre", "sport_fre",
                       "difficulty", "enjoyment", "fatigue", "personality", "familiarity",
-                      "cut_mean", "speed_mean", "space_max"]]
+                      "cut_mean", "speed_mean", "space_max", "space_mean"]]
     df_1_full.to_csv("../Dataset/RIPPER_full_quarter.csv", encoding='gbk')
 
     df_2_full = df_2[["event",
                       "gender", "age", "height", "weight", "fre_side", "VR_exp", "game_fre", "sport_fre",
                       "difficulty", "enjoyment", "fatigue", "personality", "familiarity",
-                      "cut_mean", "speed_mean", "space_max"]]
+                      "cut_mean", "speed_mean", "space_max", "space_mean"]]
     df_2_full.to_csv("../Dataset/RIPPER_full_half.csv", encoding='gbk')
 
     # spearman 相关性筛选后的
     df_1_spearman = df_1[["event",
                           "age", "height", "weight", "VR_exp", "sport_fre",
                           "personality", "familiarity",
-                          "cut_mean", "speed_mean", "space_max"]]
+                          "cut_mean", "speed_mean", "space_max", "space_mean"]]
     df_1_spearman.to_csv("../Dataset/RIPPER_spearman_quarter.csv", encoding='gbk')
 
     df_2_spearman = df_2[["event",
                           "age", "height", "weight", "VR_exp", "sport_fre",
                           "personality", "familiarity",
-                          "cut_mean", "speed_mean", "space_max"]]
+                          "cut_mean", "speed_mean", "space_max", "space_mean"]]
     df_2_spearman.to_csv("../Dataset/RIPPER_spearman_half.csv", encoding='gbk')
